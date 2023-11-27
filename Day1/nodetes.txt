@@ -1,0 +1,1 @@
+Hi there! I am just trying to write file from node.I am just appending text in this file.
