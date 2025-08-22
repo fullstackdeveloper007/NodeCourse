@@ -457,10 +457,9 @@ await Promise.all(
 ```
 
 This doesn’t create 10 JS threads; it schedules 10 libuv requests, and the pool + OS handle them without blocking the JS thread.
----
-Perfect, this is a **very practical consideration**. Node.js is amazing for certain workloads, but it’s **not ideal for everything**. Let’s break it down carefully.
 
 ---
+# Node.js is amazing for certain workloads, but it’s not ideal for everything
 
 ## 🔹 Node.js Strengths
 
