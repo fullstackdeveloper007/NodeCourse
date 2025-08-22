@@ -73,7 +73,7 @@ The loop executes in this order:
 2. **I/O callbacks** → handles I/O finished tasks (e.g., network, filesystem).
 3. **Idle, prepare** → internal stuff.
 4. **Poll** → waits for new I/O events (like incoming requests).
-5. **Check** → executes `setImmediate` callbacks.
+5. **Check** → executes **setImmediate** callbacks.
 6. **Close callbacks** → executes `socket.on('close', ...)` etc.
 
 ---
@@ -84,21 +84,28 @@ Let’s see code to watch it in action:
 
 ```js
 const fs = require("fs");
+const net = require("net");
 
 console.log("1. Start");
 
+// ---------------- PHASE 1: TIMERS ----------------
 setTimeout(() => {
   console.log("4. setTimeout callback (Timers phase)");
 }, 0);
 
+// ---------------- PHASE 5: CHECK ----------------
 setImmediate(() => {
   console.log("6. setImmediate callback (Check phase)");
 });
 
+// ---------------- PHASE 2: I/O CALLBACKS ----------------
+// Async file read will trigger callback in I/O phase
 fs.readFile(__filename, () => {
-  console.log("5. File read completed (I/O callbacks phase)");
+  console.log("5. fs.readFile callback (I/O callbacks phase)");
 });
 
+// ---------------- MICROTASK QUEUE ----------------
+// Runs before event loop continues
 Promise.resolve().then(() => {
   console.log("3. Promise.then callback (Microtask queue)");
 });
@@ -107,6 +114,7 @@ process.nextTick(() => {
   console.log("2. process.nextTick callback (Microtask - highest priority)");
 });
 
+// ---------------- TIMERS (INTERVAL) ----------------
 let count = 0;
 let timer = setInterval(() => {
   count++;
@@ -115,9 +123,22 @@ let timer = setInterval(() => {
   if (count === 3) {
     clearInterval(timer); // stop after 3 times
   }
-}, 0); // 🚀 interval = 0ms
+}, 0); // runs in Timers phase repeatedly
 
-console.log("7. End");
+// ---------------- PHASE 4: POLL ----------------
+// Poll is usually where I/O waits; we simulate it
+setTimeout(() => {
+  console.log("Extra Poll simulation (via timeout 10ms)");
+}, 10);
+
+// ---------------- PHASE 6: CLOSE CALLBACKS ----------------
+const server = net.createServer().listen(0);
+server.on("connection", (socket) => socket.end());
+server.close(() => {
+  console.log("7. server close callback (Close callbacks phase)");
+});
+
+console.log("8. End");
 
 ```
 
@@ -129,19 +150,41 @@ The output will look like this (order may vary slightly depending on system, but
 
 ```
 1. Start
-7. End
-2. process.nextTick callback
-3. Promise.then callback
+8. End
+2. process.nextTick callback (Microtask - highest priority)
+3. Promise.then callback (Microtask queue)
 4. setTimeout callback (Timers phase)
 Interval run: 1
-5. File read completed (I/O callbacks phase)
+5. fs.readFile callback (I/O callbacks phase)
 6. setImmediate callback (Check phase)
+Extra Poll simulation (via timeout 10ms)
+7. server close callback (Close callbacks phase)
 Interval run: 2
 Interval run: 3
 
 ```
-⚠️ Key Notes  
+### ✅ Expected Execution Order (first tick of event loop)
 
+1. `1. Start` (synchronous code)
+2. `2. process.nextTick callback (Microtask - highest priority)`
+3. `3. Promise.then callback (Microtask queue)`
+4. `4. End` (sync finish)
+
+---
+
+**Event loop phases start:**
+
+5. `Interval run: 1` (Timers phase, since interval=0)
+6. `6. setTimeout callback (Timers phase)` (0ms timer)
+7. `7. setImmediate callback (Check phase)`
+8. `8. File read completed (Poll -> I/O callbacks phase)`
+9. `Interval run: 2` (next Timers phase cycle)
+10. `9. Poll phase (simulated by timeout inside poll)`
+11. `Interval run: 3` (Timers phase again)
+12. `10. server close callback (Close callbacks phase)`
+
+    
+⚠️ Key Notes  
 * setInterval(..., 0) still waits until the next timers phase (it won’t block).  
 * Execution order of setTimeout(…, 0) and setInterval(…, 0) can sometimes flip because they both sit in the same timers queue.
 * In practice, you’ll almost always see setTimeout first, then setInterval.
@@ -149,12 +192,13 @@ Interval run: 3
 ---
 
 ✅ **Key Takeaways:**
-
-* **Synchronous code** runs first (`Start`, `End`).
-* **Promises (microtasks)** run right after the current synchronous code.
-* **setTimeout** runs in **timers** phase.
-* **I/O** (like `fs.readFile`) runs in **I/O callbacks** phase.
-* **setImmediate** runs in the **check phase** (after poll).
+* `process.nextTick` always wins inside the current tick.
+* `Promise.then` runs after `nextTick`, before timers.
+* `setInterval(..., 0)` will run **every timers phase** (not continuously).
+* `setTimeout(..., 0)` fires once in the **first timers phase**.
+* `setImmediate` executes in **check phase**, which usually comes after timers if no blocking I/O.
+* `fs.readFile` callback executes in the **I/O callbacks phase (poll)**.
+* `server.close` executes in the **close callbacks phase**, always last.
 
 ---
 
