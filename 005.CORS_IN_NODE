@@ -1,0 +1,120 @@
+## **1. What is CORS?**
+
+**CORS** stands for **Cross-Origin Resource Sharing**.
+
+* It’s a **security feature implemented by browsers** to prevent malicious websites from making requests to a different domain than the one that served the web page.
+* A **“cross-origin” request** happens when:
+
+  * Your frontend (e.g., `http://localhost:3000`) tries to call an API on a different origin (e.g., `http://localhost:5000`).
+
+Without CORS, the browser will **block** these requests for security reasons.
+
+---
+
+### **Example Scenario**
+
+Frontend (React app):
+
+```
+http://localhost:3000
+```
+
+Backend (Node.js API):
+
+```
+http://localhost:5000
+```
+
+If the frontend tries:
+
+```js
+fetch('http://localhost:5000/api/data')
+```
+
+The browser may block it **unless the backend explicitly allows it** via CORS headers.
+
+---
+
+## **2. How CORS Works**
+
+When a browser makes a cross-origin request, the server can include headers like:
+
+* `Access-Control-Allow-Origin` → which domains are allowed
+* `Access-Control-Allow-Methods` → which HTTP methods are allowed (GET, POST, etc.)
+* `Access-Control-Allow-Headers` → which headers can be sent
+* `Access-Control-Allow-Credentials` → whether cookies/auth info can be sent
+
+Example response headers:
+
+```
+Access-Control-Allow-Origin: http://localhost:3000
+Access-Control-Allow-Methods: GET, POST
+Access-Control-Allow-Headers: Content-Type, Authorization
+```
+
+---
+
+## **3. Handling CORS in Node.js (Express)**
+
+### **Option 1: Using the `cors` package (recommended)**
+
+1. Install the package:
+
+```bash
+npm install cors
+```
+
+2. Use it in your Express app:
+
+```js
+const express = require('express');
+const cors = require('cors');
+
+const app = express();
+
+// Allow all origins (not recommended for production)
+app.use(cors());
+
+// Or allow only specific origin
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
+
+app.get('/api/data', (req, res) => {
+  res.json({ message: 'CORS is working!' });
+});
+
+app.listen(5000, () => console.log('Server running on port 5000'));
+```
+
+---
+
+### **Option 2: Manually setting headers**
+
+```js
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  next();
+});
+```
+
+* Useful if you want **custom control** instead of a library.
+
+---
+
+## ✅ **Best Practices**
+
+* In production, **don’t use `*` for origin**. Specify your frontend domain explicitly.
+* Enable **credentials only if needed**.
+* Use the **`cors` npm package** for simplicity and readability.
+
+---
+
+If you want, I can make a **diagram showing how a browser request triggers CORS and how the server responds** — it makes it very easy to visualize.
+
+Do you want me to do that?
