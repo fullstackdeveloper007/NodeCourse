@@ -1,5 +1,4 @@
-Perfect 👍 let’s wire up **Prisma with MS SQL Server** in NestJS.
-We’ll follow the **“first approach”** = generate Prisma schema from an **existing SQL Server database** instead of writing schema manually.
+# ORM in Nest
 
 ---
 
