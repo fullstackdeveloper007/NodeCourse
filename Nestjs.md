@@ -336,6 +336,24 @@ export class AppModule implements NestModule {
 * **Interceptors = wrap requests/responses**
 * **Middleware = raw preprocessing**
 
+Client Request
+   ↓
+Middleware   (runs first, before hitting controllers)
+   ↓
+Guards       (check if request is allowed → auth/roles)
+   ↓
+Interceptors (before controller, can transform/measure time)
+   ↓
+Pipes        (validate/transform method arguments)
+   ↓
+Controller   (your route handler executes)
+   ↓
+Service      (business logic)
+   ↓
+Interceptors (after controller, can modify response)
+   ↓
+Response sent back to Client
+
 ---
 
 Do you want me to make a **diagram (request → middleware → guard → pipe → controller → interceptor → response)** so you can see the full request lifecycle visually?
