@@ -4,12 +4,12 @@
 
 * Node.js is a **runtime environment** built on **V8 JavaScript engine** that allows running JS outside the browser.
 * It uses an **event-driven, non-blocking I/O model** → great for scalable apps.
----
+
 **2. Difference between Node.js and JavaScript in browser?**
 
 * Browser JS → manipulates DOM, no access to filesystem.
 * Node.js → backend tasks (files, DB, network). No DOM.
----
+
 ### **3. Core Modules**
 
 * `fs` – File system operations
@@ -24,8 +24,6 @@
 * `dependencies` → required in production.
 * `devDependencies` → needed only for development (tests, build tools).
 
----
-
 ### **5. Common Uses**
 
 * RESTful APIs & GraphQL servers
@@ -35,7 +33,7 @@
 * Streaming apps
 
 ### 6. **What is the difference between CommonJS (`require`) and ES Modules (`import`)?**
-## ✅ **CommonJS (CJS)**
+**CommonJS (CJS)**
 
 CommonJS is the **older module system** used in Node.js.
 
@@ -48,9 +46,8 @@ CommonJS is the **older module system** used in Node.js.
 const math = require('./math');
 module.exports = { add, subtract };
 ```
----
 
-## ✅ **ES Modules (ESM)**
+✅ **ES Modules (ESM)**
 ES Modules is the **modern JavaScript module system** used in browsers and now Node.js.
 * Uses `import` and `export`
 * Loaded **asynchronously and statically**
@@ -63,18 +60,17 @@ export const add = () => {};
 ```
 ## 🧩 **One-line difference**
 
-> **CommonJS** = old Node.js module system (require/export).
-> **ESM** = modern JavaScript module system (import/export).
+**CommonJS** = old Node.js module system (require/export).
+**ESM** = modern JavaScript module system (import/export).
 
----
-### **6. Popular Frameworks**
+### **7. Popular Frameworks**
 
 * **Express.js** – Minimal and flexible web framework.
 * **NestJS** – Enterprise-level Node.js framework (like Angular for backend).
 * **Koa.js** – Lightweight, modern framework.
 * **Fastify** – High-performance web framework.
   
-**5. What are callbacks?**
+**8. What are callbacks?**
 
 * Functions passed as arguments, executed later (async).
 * Can lead to **callback hell** → solved using Promises/async-await.
@@ -95,7 +91,7 @@ Welcome!
 ```
 ---
 
-**5.A) Callback Hell?**
+**8.A) Callback Hell?**
 Callback Hell happens when multiple async operations depend on each other and callbacks get nested inside other callbacks, making the code:
 
 Deeply indented
@@ -150,7 +146,7 @@ getUser(1, function (err, user) {
 
 ```
 
-**5.B ✅ Modern Fix: Use Promises or async/await**
+**8.B ✅ Modern Fix: Use Promises or async/await**
 
 The same logic using async/await becomes:
 const fs = require("fs").promises;
@@ -166,7 +162,7 @@ async function run() {
 
 run();
 ```
-**5.C await for task and Parallel execution with promise C**
+**8.C await for task and Parallel execution with promise C**
 ```node
 const task1Promise = task1(); //task1 is a async function
 const task2Promise = task2(); //task2 is a async function
@@ -180,7 +176,7 @@ const [result1, result2] = await Promise.all([task1(), task2()]);
 ```
 
 
-**6. What is the Event Loop?**
+**9. What is the Event Loop?**
 Node.js is single-threaded for JavaScript execution, but it handles concurrency using an event-driven, non-blocking I/O model.
 The event loop delegates I/O work to the OS kernel or libuv thread pool, and JS callbacks execute only when results are ready.
 This allows Node.js to manage thousands of concurrent operations without creating additional JavaScript threads.
@@ -192,7 +188,7 @@ That’s how Node.js achieves **non-blocking I/O**.
 
 ---
 
-### **6.B. Phases of the Event Loop**
+### **9.B. Phases of the Event Loop**
 
 The loop executes in this order:
 
@@ -205,7 +201,7 @@ The loop executes in this order:
 
 ---
 
-### **6.C. Practical Example**
+### **9.C. Practical Example**
 
 Let’s see code to watch it in action:
 
@@ -271,7 +267,7 @@ console.log("8. End");
 
 ---
 
-### **6.D. Expected Output**
+### **9.D. Expected Output**
 
 The output will look like this (order may vary slightly depending on system, but promises always run **before timers/immediate**):
 
@@ -329,14 +325,14 @@ Interval run: 3
 
 ---
 
-**7. What are Streams?**
+**10. What are Streams?**
 
 * Handle data **piece by piece** instead of loading all at once.
 * Types: Readable, Writable, Duplex, Transform.
 
 ---
 
-**8. What are Buffers?**
+**11. What are Buffers?**
 
 * Temporary storage for **binary data**.
 * Useful for files, network packets, etc.
@@ -345,28 +341,28 @@ Interval run: 3
 
 ## 🔹 **Intermediate Node.js**
 
-**9. How does Node.js handle concurrency if single-threaded?**
+**12. How does Node.js handle concurrency if single-threaded?**
 
 * Uses **event loop + libuv thread pool** for async I/O.
 * Heavy CPU tasks → offloaded to worker threads.
 
 ---
 
-**10. process.nextTick() vs setImmediate()?**
+**13. process.nextTick() vs setImmediate()?**
 
 * `process.nextTick()` → runs **before** next event loop iteration.
 * `setImmediate()` → runs **after** current event loop completes.
 
 ---
 
-**11. What is middleware in Express?**
+**14. What is middleware in Express?**
 
 * Functions that run **between request and response**.
 * Example: logging, authentication, error handling.
 
 ---
 
-**12. Common built-in modules?**
+**15. Common built-in modules?**
 
 * `fs`, `path`, `http`, `os`, `events`, `crypto`, `util`.
 
