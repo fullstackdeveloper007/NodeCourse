@@ -325,6 +325,25 @@ Interval run: 3
 
 ---
 
+
+## What actually uses the thread pool?
+
+Libuv’s thread pool is only used for **specific built-in asynchronous operations**:
+
+| Category                                            | Does it use thread pool? |
+| --------------------------------------------------- | ------------------------ |
+| File system (`fs.*`)                                | ✅ Yes                    |
+| Crypto (`pbkdf2`, `scrypt`, some hashing)           | ✅ Yes                    |
+| DNS (`dns.lookup`)                                  | ✅ Yes                    |
+| Compression (`zlib`)                                | ✅ Yes                    |
+| User-defined JS logic                               | ❌ No                     |
+| CPU-heavy loops (sorting, calculating primes, etc.) | ❌ No                     |
+| JSON.parse/stringify for huge data                  | ❌ No                     |
+| Large array or string processing                    | ❌ No                     |
+
+---
+
+
 **10. What are Streams?**
 
 * Handle data **piece by piece** instead of loading all at once.
