@@ -46,17 +46,9 @@ Perfect 👍 let’s make this a **Node.js Interview Q\&A Cheatsheet** with **br
 ---
 
 **6. What is the Event Loop?**
-
-* Mechanism that allows Node.js to handle **non-blocking I/O** in a single thread.
-* Phases: timers → I/O callbacks → idle → poll → check → close.
-
----
-Great question 🚀. The **Event Loop** is one of the most important concepts in Node.js, and understanding it will make a lot of things about async behavior (like `setTimeout`, promises, file I/O, etc.) crystal clear.
-
----
-
-### **6.A. What is the Event Loop?**
-
+Node.js is single-threaded for JavaScript execution, but it handles concurrency using an event-driven, non-blocking I/O model.
+The event loop delegates I/O work to the OS kernel or libuv thread pool, and JS callbacks execute only when results are ready.
+This allows Node.js to manage thousands of concurrent operations without creating additional JavaScript threads.
 * Node.js runs in a **single thread** (unlike Java or C# web servers that spawn many threads).
 * To handle thousands of concurrent requests, it uses the **event loop**.
 * The event loop continuously checks: “Do I have something to execute? Are there callbacks waiting? Do I have timers expired?”
