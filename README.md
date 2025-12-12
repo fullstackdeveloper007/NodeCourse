@@ -1,29 +1,24 @@
-# Basics
-Perfect 👍 let’s make this a **Node.js Interview Q\&A Cheatsheet** with **brief but solid answers** you can quickly review.
-
----
-
-# 📌 **Node.js Interview Q\&A Cheatsheet**
-
----
-
-## 🔹 **Basic Node.js**
+# Basics 📌 **Node.js Interview Q\&A Cheatsheet**-
 
 **1. What is Node.js?**
 
 * Node.js is a **runtime environment** built on **V8 JavaScript engine** that allows running JS outside the browser.
 * It uses an **event-driven, non-blocking I/O model** → great for scalable apps.
-
 ---
-
 **2. Difference between Node.js and JavaScript in browser?**
 
 * Browser JS → manipulates DOM, no access to filesystem.
 * Node.js → backend tasks (files, DB, network). No DOM.
-
 ---
+### **3. Core Modules**
 
-**3. What is npm?**
+* `fs` – File system operations
+* `http` – Create web servers
+* `path` – Handle file paths
+* `os` – OS-related info
+* `events` – Event emitter
+  
+**4. What is npm?**
 
 * Node Package Manager, comes with Node.js.
 * `dependencies` → required in production.
@@ -31,19 +26,159 @@ Perfect 👍 let’s make this a **Node.js Interview Q\&A Cheatsheet** with **br
 
 ---
 
-**4. CommonJS vs ES Modules?**
+### **5. Common Uses**
 
-* CommonJS → `require()`, synchronous.
-* ES Modules → `import/export`, asynchronous, modern standard.
+* RESTful APIs & GraphQL servers
+* Real-time apps (chat, collaboration tools)
+* Microservices
+* CLI tools
+* Streaming apps
 
+### 6. **What is the difference between CommonJS (`require`) and ES Modules (`import`)?**
+## ✅ **CommonJS (CJS)**
+
+CommonJS is the **older module system** used in Node.js.
+
+* Uses `require()` and `module.exports`
+* Loads modules **synchronously at runtime**
+* Node.js default before ES modules
+
+**Example:**
+```js
+const math = require('./math');
+module.exports = { add, subtract };
+```
 ---
 
+## ✅ **ES Modules (ESM)**
+ES Modules is the **modern JavaScript module system** used in browsers and now Node.js.
+* Uses `import` and `export`
+* Loaded **asynchronously and statically**
+* Better for optimization and modern development
+
+**Example:**
+```js
+import math from './math.js';
+export const add = () => {};
+```
+## 🧩 **One-line difference**
+
+> **CommonJS** = old Node.js module system (require/export).
+> **ESM** = modern JavaScript module system (import/export).
+
+---
+### **6. Popular Frameworks**
+
+* **Express.js** – Minimal and flexible web framework.
+* **NestJS** – Enterprise-level Node.js framework (like Angular for backend).
+* **Koa.js** – Lightweight, modern framework.
+* **Fastify** – High-performance web framework.
+  
 **5. What are callbacks?**
 
 * Functions passed as arguments, executed later (async).
 * Can lead to **callback hell** → solved using Promises/async-await.
+  
+```node
+function greet(name, callback) {
+  console.log("Hello " + name);
+  callback(); // Execute the callback function
+}
 
+greet("Mohan", function() {
+  console.log("Welcome!");
+});
+
+O/S
+Hello Mohan
+Welcome!
+```
 ---
+
+**5.A) Callback Hell?**
+Callback Hell happens when multiple async operations depend on each other and callbacks get nested inside other callbacks, making the code:
+
+Deeply indented
+Hard to read
+Hard to debug
+Hard to maintain
+This is also known as:
+“Pyramid of Doom”
+
+Real-World Example of Callback Hell
+
+- Imagine we want to:
+- Read a user from DB
+- Fetch their orders
+- Get details of each order
+- Write the result to a file
+
+* In old-style Node.js callbacks, it may look like this:
+```node
+const fs = require("fs");
+
+function getUser(id, callback) {
+  setTimeout(() => {
+    console.log("User fetched");
+    callback(null, { id: id, name: "Mohan" });
+  }, 1000);
+}
+
+function getOrders(user, callback) {
+  setTimeout(() => {
+    console.log("Orders fetched");
+    callback(null, ["Order1", "Order2"]);
+  }, 1000);
+}
+
+function getOrderDetails(order, callback) {
+  setTimeout(() => {
+    console.log("Order details fetched");
+    callback(null, order + " Details");
+  }, 1000);
+}
+
+getUser(1, function (err, user) {
+  getOrders(user, function (err, orders) {
+    getOrderDetails(orders[0], function (err, details) {
+      fs.writeFile("result.txt", details, function (err) {
+        console.log("File written!");
+      });
+    });
+  });
+});
+
+```
+
+**5.B ✅ Modern Fix: Use Promises or async/await**
+
+The same logic using async/await becomes:
+const fs = require("fs").promises;
+
+```node
+async function run() {
+  const user = await getUser(1);
+  const orders = await getOrders(user);
+  const details = await getOrderDetails(orders[0]);
+  await fs.writeFile("result.txt", details);
+  console.log("File written!");
+}
+
+run();
+```
+**5.C await for task and Parallel execution with promise C**
+```node
+const task1Promise = task1(); //task1 is a async function
+const task2Promise = task2(); //task2 is a async function
+
+const result1 = await task1Promise;
+const result2 = await task2Promise;
+
+//or even 
+const [result1, result2] = await Promise.all([task1(), task2()]);
+
+```
+
 
 **6. What is the Event Loop?**
 Node.js is single-threaded for JavaScript execution, but it handles concurrency using an event-driven, non-blocking I/O model.
