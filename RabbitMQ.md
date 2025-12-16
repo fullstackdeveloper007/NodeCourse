@@ -1,6 +1,7 @@
-# RabbitMQ
+# RabbitMQ Latest version 4.2.1 (Advance AMQP Message model)
 
 Advantage of Queue 
+
 * decoupling: 
 * Scalable : Multiple comnsuming Service
 * Performeant : Queue Can sit on its own machine
@@ -10,16 +11,15 @@ Advantage of Queue
 * Broser based management
 * Plug -INS
 
-  Advance AMQP Message model ,Specially Version (0-9-1)
-
+<img width="505" height="205" alt="image" src="https://github.com/user-attachments/assets/97a73fd1-6b18-4ac1-9998-e139d0582ec2" />
 
 Check out service is connected to Exchange and exchange is connected to queue by binding keys.. Consumers are subscribed to the queue
 
-Fanout exchange: All the meesage to exchange will be duplicated and passed to all the queues.
-Direct Exchage : In this exchange the producer will produce the message and that message will also produce the routing key, The routing key is then compared to the binding key of queue, If exact match then it is moved the queue accordingly.
-Topic excahnge : Partial match between routing key and binding key, If routing key is"ship.shoes" and binding key is "ship.any", and exchnage is topic excahneg then it will routed to the queue
-Header Exchange: Roting key is ignored, the message is moved to the ssytem accroding to the header 
-Default Exchange: Routing key is tied to the name of queue itself
+* Fanout exchange: All the meesage to exchange will be duplicated and passed to all the queues.
+* Direct Exchage : In this exchange the producer will produce the message and that message will also produce the routing key, The routing key is then compared to the binding key of queue, If exact match then it is moved the queue accordingly.
+* Topic excahnge : Partial match between routing key and binding key, If routing key is"ship.shoes" and binding key is "ship.any", and exchnage is topic excahneg then it will routed to the queue
+* Header Exchange: Roting key is ignored, the message is moved to the ssytem accroding to the header 
+* Default Exchange: Routing key is tied to the name of queue itself
 
 
 # 1️⃣ RabbitMQ Basics
